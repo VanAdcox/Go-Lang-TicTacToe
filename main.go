@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 )
 
 func create_empty_board() [3][3]string {
@@ -15,33 +14,74 @@ func create_empty_board() [3][3]string {
 
 func main() {
 	var board = create_empty_board()
-	var turn int = 1
+	var turn string = "X"
 
 	for {
-		fmt.Printf("It's %d's turn \n", turn)
+		fmt.Printf("It's %s's turn \n", turn)
 		print_board(board)
 		for {
-			if player_turn(turn, &board, "sen") {
+			if player_turn(turn, &board) {
 				break
 			}
 		}
-		if turn == 1 {
-			turn = 0
-		} else if turn == 0 {
-			turn = 1
+		if check_win(board) {
+			print_board(board)
+			fmt.Printf("%s WINS!!!!!\n", turn)
+			break
+		} else if check_draw(board) {
+			print_board(board)
+			fmt.Println("You guys stink and drew the game :/")
+			break
+		}
+		if turn == "X" {
+			turn = "O"
+		} else if turn == "O" {
+			turn = "X"
 		}
 	}
 
 }
+func check_draw(board [3][3]string) bool {
+	for row := 0; row < len(board); row++ {
+		for col := 0; col < len(board); col++ {
+			if board[row][col] == "_" {
+				return false
+			}
+		}
+	}
+	return true
+}
 
-func player_turn(turn int, board *[3][3]string, test string) bool {
+func check_win(board [3][3]string) bool {
+
+	for index := 0; index < len(board); index++ {
+		// check horiz
+		if turn := board[index][0]; turn != "_" && turn == board[index][1] && turn == board[index][2] {
+			return true
+		}
+		// check vert
+		if turn := board[0][index]; turn != "_" && turn == board[1][index] && turn == board[2][index] {
+			return true
+		}
+	}
+	//check diag
+	if turn := board[0][0]; turn != "_" && turn == board[1][1] && turn == board[2][2] {
+		return true
+	}
+	if turn := board[0][2]; turn != "_" && turn == board[1][1] && turn == board[2][0] {
+		return true
+	}
+
+	return false
+}
+
+func player_turn(turn string, board *[3][3]string) bool {
 	var col, row int
 	fmt.Print("type col then row: ")
 	fmt.Scan(&col, &row)
 
-	fmt.Printf("%d,%d,%d, %s", col, row, turn, test)
 	if board[row][col] == "_" {
-		board[row][col] = strconv.Itoa(turn)
+		board[row][col] = turn
 		return true
 	}
 	fmt.Println("Already occupied try again!")
