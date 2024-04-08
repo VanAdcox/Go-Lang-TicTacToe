@@ -15,31 +15,37 @@ func create_empty_board() [3][3]string {
 
 func main() {
 	var board = create_empty_board()
-	var turn int = 0
-	print_board(board)
+	var turn int = 1
 
-	fmt.Printf("It's %d's turn \n", turn)
 	for {
+		fmt.Printf("It's %d's turn \n", turn)
 		print_board(board)
-		if player_turn(turn, board) {
-			break
+		for {
+			if player_turn(turn, &board, "sen") {
+				break
+			}
+		}
+		if turn == 1 {
+			turn = 0
+		} else if turn == 0 {
+			turn = 1
 		}
 	}
 
 }
 
-func player_turn(turn int, board [3][3]string) bool {
+func player_turn(turn int, board *[3][3]string, test string) bool {
 	var col, row int
-	fmt.Print("type col then row")
-	fmt.Scanf("%v %v", &col, &row)
+	fmt.Print("type col then row: ")
+	fmt.Scan(&col, &row)
 
+	fmt.Printf("%d,%d,%d, %s", col, row, turn, test)
 	if board[row][col] == "_" {
 		board[row][col] = strconv.Itoa(turn)
 		return true
-	} else {
-		fmt.Println("Already occupied try again!")
-		return false
 	}
+	fmt.Println("Already occupied try again!")
+	return false
 }
 func print_board(board [3][3]string) {
 	for row := 0; row < len(board); row++ {
